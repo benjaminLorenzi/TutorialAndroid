@@ -4,4 +4,7 @@
     <string name="title_posts">Posts</string>
     <string name="welcome_home">Welcome to the home screen</string>
     <string name="welcome_post">Welcome to the posts lists</string>
+    <string name="detail_title">Detail Screen</string>
+    <string name="home_button_detail">Open Detail</string>
+    <string name="back_content_description">Go back</string>
 </resources>

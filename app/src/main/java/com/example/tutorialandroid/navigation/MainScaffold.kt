@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tutorialandroid.screen.HomeScreen
+import com.example.tutorialandroid.screen.DetailScreen
 import com.example.tutorialandroid.screen.PostListScreen
 import com.example.tutorialandroid.R
 
@@ -44,19 +45,28 @@ import com.example.tutorialandroid.R
  *  - facilement scalable (ajout de nouveaux onglets)
  *  - 100% Compose (aucune vue Android classique)
  */
+object Routes {
+    const val DETAIL = "detail"
+}
+
 @Composable
 fun MainScaffold() {
     // Création du contrôleur de navigation
     val navController = rememberNavController()
+
     // Liste de tes onglets (tabs) présents dans la bottom bar.
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Posts
     )
 
+    val rootRoutes = items.map { it.route }
+
     // On observe UNE FOIS la route actuelle
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
+
+    val isRootDestination = currentRoute in rootRoutes
 
     Scaffold(
         // 🔹 TOP BAR (en haut)
@@ -65,8 +75,12 @@ fun MainScaffold() {
                 titleRes = when (currentRoute) {
                     BottomNavItem.Home.route -> R.string.title_home
                     BottomNavItem.Posts.route -> R.string.title_posts
+                    Routes.DETAIL -> R.string.detail_title
                     else -> R.string.title_home
-                }
+                },
+                canNavigateBack = !isRootDestination, // on n'affiche pas la feche Back '<-' sur les ecrans racines
+                onNavigateBack = { navController.navigateUp() }
+                // navController.navigateUp fais un pop, retire la vue du navController
             )
         },
 
@@ -112,8 +126,14 @@ fun MainScaffold() {
         ) {
             // si route = home → afficher HomeScreen()
             composable(BottomNavItem.Home.route) {
-                HomeScreen()
+                HomeScreen(onNavigateToDetail = {
+                    navController.navigate(Routes.DETAIL)
+                })
             }
+            composable(Routes.DETAIL) {
+                DetailScreen()
+            }
+
             // posts → afficher PostListScreen()
             composable(BottomNavItem.Posts.route) {
                 PostListScreen()

@@ -5,4 +5,7 @@
     <string name="title_posts">Articles</string>
     <string name="welcome_home">Bienvenue sur la page d\'acceuil</string>
     <string name="welcome_post">Bienvenue sur la liste des articles</string>
+    <string name="detail_title">Écran de détail</string>
+    <string name="home_button_detail">Ouvrir le détail</string>
+    <string name="back_content_description">Revenir en arrière</string>
 </resources>
