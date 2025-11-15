@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">TutorialAndroid</string>
+    <string name="app_name">Android Tutorial</string>
+    <string name="title_home">Home</string>
+    <string name="title_posts">Posts</string>
+    <string name="welcome_home">Welcome to the home screen</string>
+    <string name="welcome_post">Welcome to the posts lists</string>
 </resources>

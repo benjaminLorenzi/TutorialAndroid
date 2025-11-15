@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Android Tutorial</string>
+    <string name="title_home">Acceuil</string>
+    <string name="title_posts">Articles</string>
+    <string name="welcome_home">Bienvenue sur la page d\'acceuil</string>
+    <string name="welcome_post">Bienvenue sur la liste des articles</string>
+</resources>

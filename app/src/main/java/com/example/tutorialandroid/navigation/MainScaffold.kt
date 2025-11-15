@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,8 +17,33 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tutorialandroid.screen.HomeScreen
 import com.example.tutorialandroid.screen.PostListScreen
+import com.example.tutorialandroid.R
 
-// Déclaration du composable principal de l'application.
+/**
+ * MainScaffold est le composable racine de l’application.
+ *
+ * Il définit la structure générale de l’interface selon les standards Android :
+ *
+ *  - Une **Top Bar** (header) affichant le titre de l’écran courant.
+ *  - Une **Bottom Navigation Bar** permettant de naviguer entre les écrans principaux.
+ *  - Un **NavHost** qui gère la navigation et affiche l’écran correspondant à la route active.
+ *
+ * Fonctionnement :
+ *  - `rememberNavController()` initialise le contrôleur de navigation.
+ *  - `currentBackStackEntryAsState()` permet d'observer la route actuelle
+ *    et donc de mettre à jour la barre du bas et le titre dynamiquement.
+ *  - Le `Scaffold` fournit la mise en page globale (top bar, bottom bar, contenu).
+ *  - Chaque item de `BottomNavItem` correspond à un onglet de la barre de navigation.
+ *
+ * Ce composable joue donc un rôle similaire à un "UITabBarController" en iOS,
+ * mais adapté aux conventions modernes de Jetpack Compose.
+ *
+ * Il est conçu pour être :
+ *  - simple
+ *  - localisable (via R.string)
+ *  - facilement scalable (ajout de nouveaux onglets)
+ *  - 100% Compose (aucune vue Android classique)
+ */
 @Composable
 fun MainScaffold() {
     // Création du contrôleur de navigation
@@ -36,10 +62,10 @@ fun MainScaffold() {
         // 🔹 TOP BAR (en haut)
         topBar = {
             SimpleTopBar(
-                title = when (currentRoute) {
-                    BottomNavItem.Home.route -> "Accueil"
-                    BottomNavItem.Posts.route -> "Articles"
-                    else -> ""
+                titleRes = when (currentRoute) {
+                    BottomNavItem.Home.route -> R.string.title_home
+                    BottomNavItem.Posts.route -> R.string.title_posts
+                    else -> R.string.title_home
                 }
             )
         },
@@ -67,10 +93,11 @@ fun MainScaffold() {
                         icon = {
                             Icon(
                                 imageVector = item.icon,
-                                contentDescription = item.label
+                                // description textuelle lue par les outils d’accessibilité (comme TalkBack)
+                                contentDescription = stringResource(item.labelRes)
                             )
                         },
-                        label = { Text(item.label) }
+                        label = { Text(stringResource(item.labelRes)) }
                     )
                 }
             }
