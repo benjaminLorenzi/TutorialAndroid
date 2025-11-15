@@ -16,10 +16,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tutorialandroid.screen.HomeScreen
 import com.example.tutorialandroid.screen.PostListScreen
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 
 // Déclaration du composable principal de l'application.
 @Composable
-fun BottomNavigationRoot() {
+fun MainScaffold() {
     // Création du contrôleur de navigation
     val navController = rememberNavController()
     // Liste de tes onglets (tabs) présents dans la bottom bar.
@@ -27,14 +31,34 @@ fun BottomNavigationRoot() {
         BottomNavItem.Home,
         BottomNavItem.Posts
     )
-    // Scaffold crée la structure de l'écran avec une barre en bas (NavigationBar).
+
+    // On observe UNE FOIS la route actuelle
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
     Scaffold(
+        // 🔹 TOP BAR (en haut)
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = when (currentRoute) {
+                        BottomNavItem.Home.route -> "Accueil"
+                        BottomNavItem.Posts.route -> "Articles"
+                        else -> ""
+                    }
+                )
+            }
+        },
+
+        // 🔹 BOTTOM BAR (en bas)
         bottomBar = {
             NavigationBar {
                 // On observe la route actuellement affichée pour savoir quel onglet est sélectionné.
-                val backStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = backStackEntry?.destination?.route
-
                 items.forEach { item ->
                     NavigationBarItem(
                         // Coloration automatique du bouton sélectionné.
