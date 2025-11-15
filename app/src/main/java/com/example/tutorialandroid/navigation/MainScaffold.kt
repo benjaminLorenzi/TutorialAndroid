@@ -16,10 +16,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tutorialandroid.screen.HomeScreen
 import com.example.tutorialandroid.screen.PostListScreen
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
 
 // Déclaration du composable principal de l'application.
 @Composable
@@ -39,20 +35,13 @@ fun MainScaffold() {
     Scaffold(
         // 🔹 TOP BAR (en haut)
         topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = when (currentRoute) {
-                        BottomNavItem.Home.route -> "Accueil"
-                        BottomNavItem.Posts.route -> "Articles"
-                        else -> ""
-                    }
-                )
-            }
+            SimpleTopBar(
+                title = when (currentRoute) {
+                    BottomNavItem.Home.route -> "Accueil"
+                    BottomNavItem.Posts.route -> "Articles"
+                    else -> ""
+                }
+            )
         },
 
         // 🔹 BOTTOM BAR (en bas)
