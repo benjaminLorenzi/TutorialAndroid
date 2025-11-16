@@ -29,6 +29,9 @@
         <receiver
             android:name=".receiver.MyExplicitReceiver"
             android:exported="false" />
+        <service
+            android:name=".service.MySimpleService"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.tutorialandroid.R
 import com.example.tutorialandroid.SecondActivity
 import com.example.tutorialandroid.receiver.MyExplicitReceiver
+import com.example.tutorialandroid.service.MySimpleService
 
 /**
  * DetailScreen affiche un écran contenant plusieurs actions utilisant
@@ -40,6 +41,7 @@ fun DetailScreen() {
         ShareTextButton()
         ExplicitIntentButton()
         ExplicitBroadcastButton()
+        StartServiceButton()
     }
 }
 
@@ -238,5 +240,47 @@ fun ExplicitBroadcastButton() {
 
     }) {
         Text(stringResource(id = R.string.detail_button_broadcast_explicite))
+    }
+}
+
+/**
+ * StartServiceButton affiche un bouton permettant de démarrer un Service Android
+ * classique à partir d'un écran Jetpack Compose.
+ *
+ * Lors du clic :
+ *  - Un Intent EXPLICITE est créé en ciblant directement `MySimpleService`
+ *    (un composant défini dans l'application et déclaré dans AndroidManifest.xml)
+ *  - L'Intent embarque un extra nommé "message", permettant de transmettre
+ *    une donnée simple au service lors de son démarrage
+ *  - `context.startService(intent)` démarre le service en arrière-plan
+ *    sans interaction avec l’interface utilisateur
+ *
+ * Ce composable illustre comment interactuer avec un Service Android
+ * depuis une interface Jetpack Compose, en utilisant un Intent explicite
+ * pour lancer une action en arrière-plan.
+ *
+ * À noter :
+ *  - Le service continuera de fonctionner même si l’utilisateur navigue
+ *    vers un autre écran dans l’application
+ *  - Comme il s’agit d’un service "simple" (non foreground), il peut être arrêté
+ *    automatiquement par le système s’il manque de ressources
+ *  - Cette approche convient aux démonstrations ou tâches légères, mais
+ *    pour des tâches longues ou critiques, l’usage d’un ForegroundService
+ *    ou WorkManager est recommandé
+ */
+@Composable
+fun StartServiceButton() {
+    val context = LocalContext.current
+
+    Button(onClick = {
+        // Intent explicite ciblant notre service
+        val intent = Intent(context, MySimpleService::class.java).apply {
+            putExtra("message", "Hello depuis Compose !")
+        }
+        // Démarrage du service
+        context.startService(intent)
+
+    }) {
+        Text(stringResource(id = R.string.detail_button_start_simple_service))
     }
 }
