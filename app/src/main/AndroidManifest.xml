@@ -26,6 +26,9 @@
         <activity
             android:name=".SecondActivity"
             android:exported="false" />
+        <receiver
+            android:name=".receiver.MyExplicitReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

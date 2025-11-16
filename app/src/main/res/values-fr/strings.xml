@@ -16,4 +16,5 @@
     <string name="second_activity_welcome">Bienvenue sur la seconde Activity ! (Explicit Intent)</string>
     <string name="second_activity_username">Nom d’utilisateur : %1$s</string>
     <string name="open_second_activity">Ouvrir la seconde Activity</string>
+    <string name="detail_button_broadcast_explicite">Envoyer un Broadcast explicite</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.tutorialandroid.R
 import com.example.tutorialandroid.SecondActivity
+import com.example.tutorialandroid.receiver.MyExplicitReceiver
 
 /**
  * DetailScreen affiche un écran contenant plusieurs actions utilisant
@@ -38,6 +39,7 @@ fun DetailScreen() {
         EmailButton()
         ShareTextButton()
         ExplicitIntentButton()
+        ExplicitBroadcastButton()
     }
 }
 
@@ -194,5 +196,47 @@ fun ExplicitIntentButton() {
         context.startActivity(intent)
     }) {
         Text(stringResource(id = R.string.open_second_activity))
+    }
+}
+
+/**
+ * ExplicitBroadcastButton affiche un bouton permettant d’envoyer un broadcast
+ * via un Intent explicite, c’est-à-dire un Intent qui cible directement
+ * un composant interne de l’application : ici, le BroadcastReceiver
+ * `MyExplicitReceiver`.
+ *
+ * Lors du clic :
+ *  - un Intent est créé en spécifiant explicitement la classe du receiver
+ *    (`MyExplicitReceiver::class.java`), ce qui permet d’éviter qu’une autre
+ *    application intercepte la diffusion.
+ *
+ *  - un message est ajouté à l’Intent via `putExtra`, afin d’envoyer des données
+ *    au receiver.
+ *
+ *  - l’Intent est envoyé via `context.sendBroadcast(intent)`, ce qui déclenche
+ *    immédiatement l’appel à `onReceive()` dans `MyExplicitReceiver`.
+ *
+ * Ce bouton sert de démonstration pédagogique : dans les applications modernes,
+ * les BroadcastReceivers explicites sont rarement utilisés pour de la logique
+ * métier, mais restent très utiles pour :
+ *   • comprendre le cycle de vie des receivers
+ *   • tester ou démontrer les mécanismes d’Intent explicites
+ *   • effectuer des communications internes légères entre composants
+ */
+@Composable
+fun ExplicitBroadcastButton() {
+    val context = LocalContext.current
+
+    Button(onClick = {
+        // Explicit Intent : on cible directement notre receiver
+        val intent = Intent(context, MyExplicitReceiver::class.java).apply {
+            putExtra("message", "Hello depuis l’Explicit Intent !")
+        }
+
+        // Envoi du broadcast explicit
+        context.sendBroadcast(intent)
+
+    }) {
+        Text(stringResource(id = R.string.detail_button_broadcast_explicite))
     }
 }
