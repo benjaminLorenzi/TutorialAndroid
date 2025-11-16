@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.tutorialandroid.R
+import com.example.tutorialandroid.SecondActivity
 
 /**
  * DetailScreen affiche un écran contenant plusieurs actions utilisant
@@ -36,6 +37,7 @@ fun DetailScreen() {
         CallButton()
         EmailButton()
         ShareTextButton()
+        ExplicitIntentButton()
     }
 }
 
@@ -159,5 +161,38 @@ fun ShareTextButton() {
         //context.startActivity(sendIntent)
     }) {
         Text(stringResource(id = R.string.detail_button_share_text))
+    }
+}
+
+/**
+ * ExplicitIntentButton affiche un bouton permettant d'ouvrir une Activity précise
+ * via un *intent explicite*.
+ *
+ * Contrairement à un intent implicite (où Android choisit l'application capable
+ * de gérer une action), un intent explicite cible directement une Activity de ton
+ * application en fournissant son type (SecondActivity::class.java).
+ *
+ * Lors du clic :
+ *  - on construit un Intent en spécifiant explicitement l'Activity à lancer
+ *  - on ajoute une donnée supplémentaire ("username") via putExtra(), qui sera
+ *    récupérée dans SecondActivity
+ *  - on lance l'Activity grâce au context Compose (LocalContext.current)
+ *
+ * Ce composant illustre la manière classique d'effectuer une navigation entre
+ * Activities dans Android, même dans une application Jetpack Compose.
+ */
+@Composable
+fun ExplicitIntentButton() {
+    val context = LocalContext.current
+
+    Button(onClick = {
+        //  INTENT EXPLICITE : on cible explicitement une Activity
+        val intent = Intent(context, SecondActivity::class.java).apply {
+            putExtra("username", "Bob Dylan")
+        }
+        // Lance SecondActivity avec les données passées en argument
+        context.startActivity(intent)
+    }) {
+        Text(stringResource(id = R.string.open_second_activity))
     }
 }
