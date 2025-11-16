@@ -8,4 +8,9 @@
     <string name="detail_title">Écran de détail</string>
     <string name="home_button_detail">Ouvrir le détail</string>
     <string name="back_content_description">Revenir en arrière</string>
+    <string name="detail_button_open_url">Ouvrir l\'URL</string>
+    <string name="detail_button_open_dial">Composer un numéro</string>
+    <string name="detail_button_open_email">Ouvrir l\'e-mail</string>
+    <string name="detail_button_share_text">Partager du Texte</string>
+    <string name="detail_button_share_with">Partager avec</string>
 </resources>
