@@ -73,7 +73,7 @@ fun PostListScreen(
         }
 
         // Conteneur principal pour l'affichage de l'état UI
-        Box() {
+        Box(modifier = Modifier.fillMaxSize()) {
             when (val s = uiState) {
 
                 // 🔵 État : chargement

@@ -1,4 +1,5 @@
 package com.example.tutorialandroid.domain
+import kotlinx.coroutines.delay
 
 interface PostRepository {
     suspend fun fetchPosts(): List<PostDomain>
@@ -6,6 +7,8 @@ interface PostRepository {
 
 class FakePostRepository : PostRepository {
     override suspend fun fetchPosts(): List<PostDomain> {
+        // Simule un délai réseau de 2 secondes
+        delay(2000)
         // Données fake, simulant une réponse API
         return listOf(
             PostDomain(id = 1, userId = 1, title = "Fake post 1", body = "Description 1"),
