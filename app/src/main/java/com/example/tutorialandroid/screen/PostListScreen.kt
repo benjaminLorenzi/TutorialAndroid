@@ -28,6 +28,7 @@ import com.example.tutorialandroid.components.RefreshButton
 import com.example.tutorialandroid.domain.NetworkPostRepository
 import com.example.tutorialandroid.network.NetworkPost
 import com.example.tutorialandroid.network.PostAPI
+import com.example.tutorialandroid.viewModel.PostsViewModelFactory
 
 /**
  * Écran affichant une liste de posts en fonction de l’état UI exposé par un ViewModel.
@@ -42,7 +43,26 @@ import com.example.tutorialandroid.network.PostAPI
  */
 @Composable
 fun PostListScreen(
-    vm: PostsViewModel = viewModel()
+    // INJECTION DU VIEWMODEL :
+    // Ici, on définit un paramètre par défaut pour 'vm'.
+    // Cela permet deux choses :
+    // 1. Utilisation simple : On peut appeler PostListScreen() sans rien passer, il se débrouille.
+    // 2. Testabilité / Preview : On peut passer un MockViewModel pour tester l'UI sans le réseau.
+    vm: PostsViewModel = viewModel(
+        // LA FACTORY (L'USINE) :
+        // Comme vu précédemment, le ViewModel a besoin d'arguments (le repository).
+        // La fonction 'viewModel()' de Compose ne peut pas deviner comment créer ces arguments.
+        // On lui passe donc notre 'PostsViewModelFactory' qu'on a créée juste avant.
+        factory = PostsViewModelFactory(
+            // LE REPOSITORY (LA DÉPENDANCE) :
+            // C'est ici qu'on crée concrètement l'accès aux données.
+            // On instancie 'NetworkPostRepository' en lui donnant l'API Retrofit ('NetworkPost.api').
+            // NOTE : Dans une vraie app, cette instanciation se fait souvent
+            // plus haut (dans l'Activity ou via Hilt) pour éviter de recréer le repository à chaque fois,
+            // mais pour cet exercice, c'est valide.
+            repository = NetworkPostRepository(NetworkPost("https://jsonplaceholder.typicode.com/").api)
+        )
+    )
 ) {
     // Collecte le StateFlow du ViewModel et le convertit en State Compose réactif.
     // Toute mise à jour du ViewModel forcera une recomposition.

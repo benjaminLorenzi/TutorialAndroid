@@ -11,20 +11,25 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
- * NetworkPost est un objet singleton responsable de configurer :
+ * NetworkPost est désormais une classe de configuration réseau.
  *
+ * Elle est responsable de l'assemblage de la stack technique :
  *  - OkHttp (client HTTP bas niveau)
- *  - Logging HTTP
- *  - Retrofit (gestion du REST)
+ *  - Logging HTTP (Intercepteur pour voir les logs)
+ *  - Retrofit (gestion des appels REST)
  *  - Moshi (conversion JSON → Kotlin data classes)
  *
- * Cet objet fournit ensuite une instance unique de PostAPI
- * via un accès lazy : NetworkPost.api
+ * ÉVOLUTION (Class vs Object) :
+ * Contrairement à la version précédente (Singleton), cette classe demande
+ * une [baseUrl] à l'instanciation. Cela permet :
+ * 1. De changer d'environnement facilement (Dev, Prod, Localhost).
+ * 2. De faciliter les tests en passant une URL de MockServer.
  *
- * Ce pattern est très courant et constitue la base des couches réseau
- * dans les applications Android modernes.
+ * Usage :
+ * val networkSetup = NetworkPost("https://mon-api.com/")
+ * val api = networkSetup.api
  */
-object NetworkPost {
+class NetworkPost(baseUrl: String) {
 
     /**
      * Intercepteur de logs HTTP.
@@ -73,7 +78,7 @@ object NetworkPost {
      */
     private val retrofit = Retrofit.Builder()
         // le vrai serveur
-        .baseUrl("https://jsonplaceholder.typicode.com/")
+        .baseUrl(baseUrl)
         //.baseUrl("http://10.0.2.2:3010/")
         .client(okHttp)
         .addConverterFactory(MoshiConverterFactory.create(moshi))

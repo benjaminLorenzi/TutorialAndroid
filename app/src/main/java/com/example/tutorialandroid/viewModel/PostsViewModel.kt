@@ -1,5 +1,6 @@
 package com.example.tutorialandroid.viewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tutorialandroid.network.NetworkPost
 import com.example.tutorialandroid.domain.NetworkPostRepository
@@ -56,5 +57,59 @@ class PostsViewModel(
     // Refresh call 'load' en mode force
     fun refresh() {
         load(force = true)
+    }
+}
+/**
+ * Cette classe sert d'usine (Factory) pour fabriquer des instances de PostsViewModel.
+ *
+ * PROBLÈME À RÉSOUDRE :
+ * Par défaut, Android ne sait instancier que des ViewModels qui ont un constructeur vide ().
+ * Or, notre PostsViewModel a besoin d'un 'repository' dans son constructeur.
+ * Si on ne fait rien, l'application crashera avec une erreur "InstantiationException".
+ *
+ * SOLUTION :
+ * On implémente l'interface `ViewModelProvider.Factory` pour expliquer à Android
+ * comment fabriquer manuellement notre ViewModel avec ses dépendances.
+ */
+class PostsViewModelFactory(
+    // On passe en paramètre tout ce dont le ViewModel aura besoin.
+    // Ici, c'est le repository, mais ça pourrait être d'autres dépendances.
+    private val repository: PostRepository
+) : ViewModelProvider.Factory { // On signe le contrat "Je suis une usine à ViewModels"
+
+    /**
+     * La méthode 'create' est appelée automatiquement par le framework Android (ViewModelProvider)
+     * lorsqu'il a besoin de créer une nouvelle instance du ViewModel.
+     *
+     * @param modelClass La classe du ViewModel qu'on essaie de créer (ex: PostsViewModel::class.java).
+     * @param T Le type générique qui assure que le retour est bien un sous-type de ViewModel.
+     */
+    @Suppress("UNCHECKED_CAST") // On demande au compilateur d'ignorer l'avertissement de cast (voir plus bas)
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+
+        // VÉRIFICATION DE SÉCURITÉ :
+        // On vérifie si la classe demandée (modelClass) est bien notre PostsViewModel
+        // ou une classe qui en hérite.
+        // C'est une protection au cas où cette Factory serait utilisée par erreur pour un autre ViewModel.
+        if (modelClass.isAssignableFrom(PostsViewModel::class.java)) {
+
+            // CRÉATION ET INJECTION :
+            // C'est le moment clé : on instancie manuellement le ViewModel
+            // en lui passant le 'repository' qu'on a stocké dans la Factory.
+            // C'est ici que l'injection de dépendance manuelle a lieu.
+            val viewModel = PostsViewModel(repository)
+
+            // LE CAST (UNCHECKED CAST) :
+            // La méthode doit retourner un type 'T'.
+            // Comme on vient de vérifier avec le 'if' que T est bien compatible avec PostsViewModel,
+            // on peut forcer le typage avec "as T".
+            // L'annotation @Suppress sert à dire "T'inquiète pas Kotlin, je sais ce que je fais".
+            return viewModel as T
+        }
+
+        // GESTION D'ERREUR :
+        // Si quelqu'un essaie d'utiliser cette Factory pour créer un "UserViewModel" par exemple,
+        // on lève une exception pour dire "Je ne sais pas fabriquer ça".
+        throw IllegalArgumentException("Unknown ViewModel class: Cette factory ne gère que PostsViewModel")
     }
 }
