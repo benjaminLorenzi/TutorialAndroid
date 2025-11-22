@@ -19,6 +19,7 @@ import com.example.tutorialandroid.screen.HomeScreen
 import com.example.tutorialandroid.screen.DetailScreen
 import com.example.tutorialandroid.screen.PostListScreen
 import com.example.tutorialandroid.R
+import com.example.tutorialandroid.screen.SettingsScreen
 
 /**
  * MainScaffold est le composable racine de l’application.
@@ -57,7 +58,8 @@ fun MainScaffold() {
     // Liste de tes onglets (tabs) présents dans la bottom bar.
     val items = listOf(
         BottomNavItem.Home,
-        BottomNavItem.Posts
+        BottomNavItem.Posts,
+        BottomNavItem.Settings
     )
 
     val rootRoutes = items.map { it.route }
@@ -75,6 +77,7 @@ fun MainScaffold() {
                 titleRes = when (currentRoute) {
                     BottomNavItem.Home.route -> R.string.title_home
                     BottomNavItem.Posts.route -> R.string.title_posts
+                    BottomNavItem.Settings.route -> R.string.title_settings
                     Routes.DETAIL -> R.string.detail_title
                     else -> R.string.title_home
                 },
@@ -137,6 +140,10 @@ fun MainScaffold() {
             // posts → afficher PostListScreen()
             composable(BottomNavItem.Posts.route) {
                 PostListScreen()
+            }
+
+            composable(BottomNavItem.Settings.route) {
+                SettingsScreen()
             }
         }
     }

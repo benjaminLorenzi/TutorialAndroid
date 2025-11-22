@@ -25,6 +25,9 @@ import com.example.tutorialandroid.viewModel.PostsUiState
 import com.example.tutorialandroid.viewModel.PostsViewModel
 import com.example.tutorialandroid.components.PostsList
 import com.example.tutorialandroid.components.RefreshButton
+import com.example.tutorialandroid.domain.NetworkPostRepository
+import com.example.tutorialandroid.network.NetworkPost
+import com.example.tutorialandroid.network.PostAPI
 
 /**
  * Écran affichant une liste de posts en fonction de l’état UI exposé par un ViewModel.

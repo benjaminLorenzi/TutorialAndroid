@@ -3,6 +3,7 @@ package com.example.tutorialandroid.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.annotation.StringRes
 import com.example.tutorialandroid.R
@@ -49,5 +50,19 @@ sealed class BottomNavItem(
         route = "posts",
         labelRes = R.string.title_posts,
         icon = Icons.Filled.List
+    )
+
+    /**
+     * Onglet "Settings".
+     *
+     * Même principe que Home :
+     * - route = "settings"
+     * - labelRes = R.string.title_settings (localisé dans strings.xml)
+     * - icon = icône Material
+     */
+    object Settings : BottomNavItem(
+        route = "settings",
+        labelRes = R.string.title_settings,
+        icon = Icons.Filled.Settings
     )
 }
