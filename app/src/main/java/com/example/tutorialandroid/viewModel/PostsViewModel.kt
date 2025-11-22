@@ -34,9 +34,10 @@ class PostsViewModel(
     val uiState: StateFlow<PostsUiState> = _uiState
 
     // Fonction publique pour déclencher le chargement des posts.
+    // Le parametre 'force' refais un refresh meme si les donnes sont deja chargees
     fun load(force: Boolean = false) {
         // Petit garde-fou : si on a déjà un succès, on évite de relancer un chargement.
-        if (_uiState.value is PostsUiState.Success) return
+        if (!force && _uiState.value is PostsUiState.Success) return
 
         // Coroutine attachée au cycle de vie du ViewModel
         viewModelScope.launch {
@@ -52,6 +53,7 @@ class PostsViewModel(
         }
     }
 
+    // Refresh call 'load' en mode force
     fun refresh() {
         load(force = true)
     }
