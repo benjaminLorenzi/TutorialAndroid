@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.tutorialandroid.R
-import com.example.tutorialandroid.data.PostDto
+import com.example.tutorialandroid.domain.PostDomain
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,18 +47,18 @@ fun PostListScreen() {
 /**
  * Faux fournisseur de données.
  *
- * Génère deux objets PostDto "en dur" pour simuler un résultat d'API REST.
+ * Génère deux objets PostDomain "en dur" pour simuler un résultat d'API REST.
  * Cette fonction est temporaire et sera remplacée plus tard par Retrofit.
  */
 @Composable
 fun FakePostList() {
-    val post1 = PostDto(
+    val post1 = PostDomain(
         userId = 1,
         id = 1,
         title = "Post1",
         body = "description de mon machin"
     )
-    val post2 = PostDto(
+    val post2 = PostDomain(
         userId = 2,
         id = 2,
         title = "Post2",
@@ -78,7 +78,7 @@ fun FakePostList() {
  * Chaque post est affiché dans une ElevatedCard stylisée.
  */
 @Composable
-private fun PostsList(posts: List<PostDto>) {
+private fun PostsList(posts: List<PostDomain>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(), // Utilise tout l’espace
         contentPadding = PaddingValues(12.dp), // Padding autour de la liste
