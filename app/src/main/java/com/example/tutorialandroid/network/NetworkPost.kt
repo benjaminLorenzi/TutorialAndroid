@@ -74,6 +74,7 @@ object NetworkPost {
     private val retrofit = Retrofit.Builder()
         // le vrai serveur
         .baseUrl("https://jsonplaceholder.typicode.com/")
+        //.baseUrl("http://10.0.2.2:3010/")
         .client(okHttp)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
