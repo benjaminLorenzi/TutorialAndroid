@@ -24,7 +24,7 @@ sealed interface PostsUiState {
 // ViewModel responsable de fournir l'état des posts à la couche UI.
 // Il dépend d'un PostRepository (injection simple via paramètre par défaut).
 class PostsViewModel(
-    private val repository: PostRepository = NetworkPostRepository(NetworkPost.api) // simple DI
+    private val repository: PostRepository // simple DI
 ) : ViewModel() {
 
     // State flow interne, mutable seulement dans le ViewModel.
@@ -72,8 +72,16 @@ class PostsViewModel(
  * comment fabriquer manuellement notre ViewModel avec ses dépendances.
  */
 class PostsViewModelFactory(
-    // On passe en paramètre tout ce dont le ViewModel aura besoin.
-    // Ici, c'est le repository, mais ça pourrait être d'autres dépendances.
+    /*
+    Changement de l'architecture du constructeur :
+        - Suppression de la valeur par défaut `NetworkPostRepository(NetworkPost.api)`.
+        - Le paramètre `repository` est désormais obligatoire.
+
+        Pourquoi ?
+        1. Inversion de contrôle : Ce n'est plus au ViewModel de savoir comment créer le Repository.
+        2. Testabilité : Cela permet d'injecter facilement un "FakeRepository" lors des tests unitaires, sans déclencher de vrais appels réseau.
+        3. Flexibilité : Prépare le terrain pour l'utilisation d'une Factory ou de Hilt.
+     */
     private val repository: PostRepository
 ) : ViewModelProvider.Factory { // On signe le contrat "Je suis une usine à ViewModels"
 

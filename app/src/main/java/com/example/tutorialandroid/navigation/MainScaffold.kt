@@ -1,5 +1,6 @@
 package com.example.tutorialandroid.navigation
 
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -20,6 +21,7 @@ import com.example.tutorialandroid.screen.DetailScreen
 import com.example.tutorialandroid.screen.PostListScreen
 import com.example.tutorialandroid.R
 import com.example.tutorialandroid.screen.SettingsScreen
+import com.example.tutorialandroid.viewModel.PostsViewModel
 
 /**
  * MainScaffold est le composable racine de l’application.
@@ -51,7 +53,9 @@ object Routes {
 }
 
 @Composable
-fun MainScaffold() {
+fun MainScaffold(
+    vm: PostsViewModel
+) {
     // Création du contrôleur de navigation
     val navController = rememberNavController()
 
@@ -139,7 +143,7 @@ fun MainScaffold() {
 
             // posts → afficher PostListScreen()
             composable(BottomNavItem.Posts.route) {
-                PostListScreen()
+                PostListScreen(vm = vm)
             }
 
             composable(BottomNavItem.Settings.route) {
