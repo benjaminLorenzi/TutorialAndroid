@@ -1,4 +1,4 @@
-package com.example.tutorialandroid.data
+package com.example.tutorialandroid.dto
 
 /**
  * Représente un "Post" tel qu’il est renvoyé par l’API JSON

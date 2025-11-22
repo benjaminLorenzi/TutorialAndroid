@@ -1,7 +1,8 @@
 package com.example.tutorialandroid.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tutorialandroid.domain.FakePostRepository
+import com.example.tutorialandroid.network.NetworkPost
+import com.example.tutorialandroid.domain.NetworkPostRepository
 import com.example.tutorialandroid.domain.PostDomain
 import com.example.tutorialandroid.domain.PostRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ sealed interface PostsUiState {
 // ViewModel responsable de fournir l'état des posts à la couche UI.
 // Il dépend d'un PostRepository (injection simple via paramètre par défaut).
 class PostsViewModel(
-    private val repository: PostRepository = FakePostRepository() // simple DI
+    private val repository: PostRepository = NetworkPostRepository(NetworkPost.api) // simple DI
 ) : ViewModel() {
 
     // State flow interne, mutable seulement dans le ViewModel.
@@ -33,7 +34,7 @@ class PostsViewModel(
     val uiState: StateFlow<PostsUiState> = _uiState
 
     // Fonction publique pour déclencher le chargement des posts.
-    fun load() {
+    fun load(force: Boolean = false) {
         // Petit garde-fou : si on a déjà un succès, on évite de relancer un chargement.
         if (_uiState.value is PostsUiState.Success) return
 
@@ -49,5 +50,9 @@ class PostsViewModel(
                 _uiState.value = PostsUiState.Error(e.message ?: "Erreur réseau")
             }
         }
+    }
+
+    fun refresh() {
+        load(force = true)
     }
 }

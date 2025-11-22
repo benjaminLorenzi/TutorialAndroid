@@ -56,4 +56,21 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.navigation:navigation-compose:2.8.0")
+
+    // RetroFit
+    val retrofitVersion = "2.11.0"
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
+
+    // Moshi
+    var moshiKotlinVersion = "1.15.1"
+    implementation("com.squareup.moshi:moshi-kotlin:$moshiKotlinVersion")
+    implementation("com.squareup.moshi:moshi-kotlin:$moshiKotlinVersion")
+
+    // Http (client + logs réseau)
+    var httpVersion = "4.12.0"
+    implementation("com.squareup.okhttp3:okhttp:$httpVersion")
+    implementation("com.squareup.okhttp3:logging-interceptor:$httpVersion")
 }
