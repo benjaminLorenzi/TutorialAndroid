@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.ui.platform.LocalContext
+import com.example.tutorialandroid.network.Environment
 import com.example.tutorialandroid.domain.NetworkPostRepository
 import com.example.tutorialandroid.navigation.MainScaffold
 import com.example.tutorialandroid.network.NetworkPost
@@ -16,11 +17,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sharedPref = getSharedPreferences("MesPreferences", Context.MODE_PRIVATE)
-        val savedUrl = sharedPref.getString("base_url", null)
-        var baseUrl = if (savedUrl.isNullOrEmpty()) "https://jsonplaceholder.typicode.com/" else savedUrl
+        // 1. Instancier la classe Environment en lui donnant le contexte courant (l'activité)
+        val environment = Environment(this)
 
-        val networkPost = NetworkPost(baseUrl)
+        // 2. Récupérer l'URL (proprement, sans null check inutile)
+        val currentUrl = environment.getBaseUrl()
+
+        val networkPost = NetworkPost(currentUrl)
         val repository = NetworkPostRepository(networkPost.api)
         val factory = PostsViewModelFactory(repository)
 

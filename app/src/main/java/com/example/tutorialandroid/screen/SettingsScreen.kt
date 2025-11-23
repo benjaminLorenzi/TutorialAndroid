@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.example.tutorialandroid.network.Environment
 
 @Composable
 fun SettingsScreen() {
@@ -27,10 +28,11 @@ fun SettingsScreen() {
     // 2. Variable d'état pour le champ de texte
     var textValue by remember { mutableStateOf("") }
 
+    val environment = Environment(context)
+
     // 3. Charger la donnée sauvegardée au démarrage de l'écran
     LaunchedEffect(Unit) {
-        val sharedPref = context.getSharedPreferences("MesPreferences", Context.MODE_PRIVATE)
-        textValue = sharedPref.getString("base_url", null) ?: "https://jsonplaceholder.typicode.com/"
+        textValue = environment.getBaseUrl()
         Log.d("base_url", textValue)
     }
 
@@ -50,12 +52,7 @@ fun SettingsScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            // 4. Logique de sauvegarde
-            val sharedPref = context.getSharedPreferences("MesPreferences", Context.MODE_PRIVATE)
-            with(sharedPref.edit()) {
-                putString("base_url", textValue)
-                apply() // 'apply' est asynchrone (recommandé), 'commit' est synchrone
-            }
+            environment.setBaseUrl(textValue)
         }) {
             Text("Sauvegarder")
         }
