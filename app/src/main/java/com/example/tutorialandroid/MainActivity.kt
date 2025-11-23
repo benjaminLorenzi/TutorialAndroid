@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.ui.platform.LocalContext
+import com.example.tutorialandroid.database.DatabaseModule
 import com.example.tutorialandroid.network.Environment
 import com.example.tutorialandroid.domain.NetworkPostRepository
 import com.example.tutorialandroid.navigation.MainScaffold
@@ -24,7 +25,11 @@ class MainActivity : ComponentActivity() {
         val currentUrl = environment.getBaseUrl()
 
         val networkPost = NetworkPost(currentUrl)
-        val repository = NetworkPostRepository(networkPost.api)
+
+        val db = DatabaseModule.provideDatabase(this)
+        val postDao = db.postDao()
+
+        val repository = NetworkPostRepository(api = networkPost.api, postDao = postDao)
         val factory = PostsViewModelFactory(repository)
 
         val viewModel: PostsViewModel by viewModels { factory }

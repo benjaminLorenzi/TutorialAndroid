@@ -8,6 +8,7 @@ import com.example.tutorialandroid.domain.PostDomain
 import com.example.tutorialandroid.domain.PostRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 // Représente l'état de l'UI pour l'écran des posts.
@@ -34,27 +35,79 @@ class PostsViewModel(
     // La composable observera uiState et se recomposera selon Loading / Success / Error.
     val uiState: StateFlow<PostsUiState> = _uiState
 
-    // Fonction publique pour déclencher le chargement des posts.
-    // Le parametre 'force' refais un refresh meme si les donnes sont deja chargees
-    fun load(force: Boolean = false) {
-        // Petit garde-fou : si on a déjà un succès, on évite de relancer un chargement.
-        if (!force && _uiState.value is PostsUiState.Success) return
+    /**
+     * Bloc init : Exécuté dès la création du ViewModel.
+     * On lance immédiatement deux actions en parallèle.
+     */
+    init {
+        // 1. On ouvre le tuyau d'écoute vers la base de données locale.
+        observeLocalPosts()
+        // 2. On demande au réseau d'aller chercher des données fraîches.
+        refresh()
+    }
 
-        // Coroutine attachée au cycle de vie du ViewModel
+    /**
+     * Observe le flux de données local (Room).
+     * C'est ici que le pattern "Single Source of Truth" prend tout son sens.
+     * L'UI ne réagit QU'AUX changements de la base de données.
+     */
+    private fun observeLocalPosts() {
         viewModelScope.launch {
-            _uiState.value = PostsUiState.Loading
-            try {
-                // Récupération des données via le repository (réseau ou fake, selon l'implémentation)
-                val data = repository.fetchPosts()
-                _uiState.value = PostsUiState.Success(data)
-            } catch (e: Exception) {
-                // En cas d'erreur (réseau, parsing, etc.), on expose un état Error
-                _uiState.value = PostsUiState.Error(e.message ?: "Erreur réseau")
+            // collectLatest : Si une nouvelle liste arrive alors qu'on traitait la précédente,
+            // on annule le traitement en cours et on prend la plus récente.
+            repository.getStoredPosts().collectLatest { posts ->
+                if (posts.isNotEmpty()) {
+                    // Si on a des données en cache, on les affiche immédiatement (Offline First)
+                    _uiState.value = PostsUiState.Success(posts)
+                } else {
+                    // Cas : Cache vide (première installation) ou vidé.
+                    // On reste en Loading tant qu'on n'a pas reçu de données,
+                    // sauf si on est déjà en erreur.
+                    if (_uiState.value !is PostsUiState.Error) {
+                        _uiState.value = PostsUiState.Loading
+                    }
+                }
             }
         }
     }
 
-    // Refresh call 'load' en mode force
+    /**
+     * Fonction générique pour charger les données.
+     *
+     * @param force Si true, on force un appel réseau même si on affiche déjà des données.
+     *              Utile pour le "Pull-to-Refresh".
+     */
+    fun load(force: Boolean = false) {
+        // Optimisation : Si on a déjà les données et qu'on ne force pas, on ne fait rien.
+        // Cela évite de spammer le serveur si l'utilisateur tourne son écran (rotation).
+        if (!force && _uiState.value is PostsUiState.Success) return
+
+        viewModelScope.launch {
+            try {
+                // On signale qu'on travaille (utile pour afficher une barre de chargement)
+                // Note : Si on a déjà des données (Success), on pourrait choisir de ne pas repasser
+                // en Loading complet pour éviter que l'écran ne clignote (c'est un choix UX).
+                _uiState.value = PostsUiState.Loading
+                // Appel bloquant (suspend) mais asynchrone vers le réseau + écriture DB.
+                repository.refreshPosts()
+                // SUPER IMPORTANT :
+                // On n'émet pas de "Success" ici manuellement !
+                // Pourquoi ? Parce que 'repository.refreshPosts()' a écrit dans la DB.
+                // La DB a déclenché 'observeLocalPosts()' (plus haut), qui LUI va émettre le Success.
+            } catch (e: Exception) {
+                // Gestion des erreurs
+                android.util.Log.e("PostsViewModel", "refresh failed", e)
+                // On informe l'UI qu'il y a eu un pépin
+                _uiState.value = PostsUiState.Error(
+                    e.message ?: "Erreur lors du rafraîchissement des posts"
+                )
+            }
+        }
+    }
+
+    /**
+     * Helper pour forcer le rafraîchissement
+     */
     fun refresh() {
         load(force = true)
     }
