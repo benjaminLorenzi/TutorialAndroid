@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -73,4 +74,12 @@ dependencies {
     var httpVersion = "4.12.0"
     implementation("com.squareup.okhttp3:okhttp:$httpVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$httpVersion")
+
+    val roomVersion = "2.8.3"
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+// Extensions Kotlin + coroutines (suspend, Flow, etc.)
+    implementation("androidx.room:room-ktx:$roomVersion")
+// Compilateur d'annotations (génère le code Room)
+    kapt("androidx.room:room-compiler:$roomVersion")
 }
