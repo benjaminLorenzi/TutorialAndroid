@@ -1,6 +1,6 @@
 package com.example.tutorialandroid.network
 
-import com.example.tutorialandroid.dto.PostDto
+import com.example.tutorialandroid.network.PostDto
 import retrofit2.http.GET
 
 /**

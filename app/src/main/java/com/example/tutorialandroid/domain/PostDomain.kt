@@ -1,5 +1,5 @@
 package com.example.tutorialandroid.domain
-import com.example.tutorialandroid.dto.PostDto
+import com.example.tutorialandroid.network.PostDto
 
 /**
  * Représente un modèle métier (domain model) pour un Post utilisé à l’intérieur de l'application.
