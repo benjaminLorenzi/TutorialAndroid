@@ -1,6 +1,7 @@
 package com.example.tutorialandroid.domain
 import kotlinx.coroutines.delay
 import com.example.tutorialandroid.network.PostAPI
+import com.example.tutorialandroid.network.toEntity
 
 interface PostRepository {
     suspend fun fetchPosts(): List<PostDomain>
@@ -21,7 +22,9 @@ class FakePostRepository : PostRepository {
 class NetworkPostRepository(private val api: PostAPI) : PostRepository {
     override suspend fun fetchPosts(): List<PostDomain> {
         val postsDto = api.fetchPosts()
-        val postsDomain = postsDto.map { it.toDomain() }
+        val postsEntities = postsDto.map { it.toEntity() }
+        // Pour l'instant, je ne stocke pas les informations dans la base de donne
+        val postsDomain = postsEntities.map { it.toDomain() }
         return postsDomain
     }
 }

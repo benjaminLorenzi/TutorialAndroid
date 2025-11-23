@@ -1,5 +1,7 @@
 package com.example.tutorialandroid.network
 
+import com.example.tutorialandroid.database.PostEntity
+
 /**
  * Représente un "Post" tel qu’il est renvoyé par l’API JSON
  * (par exemple : https://jsonplaceholder.typicode.com/posts).
@@ -25,3 +27,19 @@ data class PostDto(
     val title: String,
     val body: String
 )
+
+/**
+ * Fonction d'extension (Extension Function) pour la classe PostDto.
+ * Elle permet de convertir un objet reçu du réseau (DTO) en objet stockable en base (Entity).
+ *
+ *
+ * - 'PostDto' (Data Transfer Object) : C'est ton objet Retrofit, l'image exacte du JSON.
+ * - 'PostEntity' : C'est ton objet Room, l'image exacte de ta table SQL.
+ */
+fun PostDto.toEntity(): PostEntity =
+    PostEntity(
+        id = id,
+        userId = userId,
+        title = title,
+        body = body
+    )

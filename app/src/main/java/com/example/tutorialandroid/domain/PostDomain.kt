@@ -1,5 +1,6 @@
 package com.example.tutorialandroid.domain
 import com.example.tutorialandroid.network.PostDto
+import com.example.tutorialandroid.database.PostEntity
 
 /**
  * Représente un modèle métier (domain model) pour un Post utilisé à l’intérieur de l'application.
@@ -23,22 +24,23 @@ data class PostDomain(
     val body: String
 )
 
+
 /**
- * Extension function permettant de convertir un PostDto (provenant de l'API)
- * vers un PostDomain (modèle métier utilisé dans l'application).
+ * Fonction d'extension pour convertir une Entité (Base de données) en Modèle du Domaine (Métier/UI).
  *
- * Cette fonction isole la logique de transformation entre :
- *  - la couche "Data" (DTO provenant du JSON)
- *  - la couche "Domaine" (objets internes pour l’UI et la logique)
+ * Architecture :
+ * PostEntity (Couche Data) -> PostDomain (Couche Domain/UI)
  *
- * L’objectif est de ne jamais exposer directement les DTO réseau à l’UI.
+ * Pourquoi ce mapping ?
+ * - PostEntity est lié aux contraintes techniques de Room (annotations @Entity, @PrimaryKey...).
+ * - PostDomain est un objet pur Kotlin (POJO/Data Class) que l'UI (Jetpack Compose) va afficher.
+ *
+ * Cela empêche l'UI de connaître l'existence de la base de données.
  */
-fun PostDto.toDomain(): PostDomain {
-    return PostDomain(
-        id = id,
+fun PostEntity.toDomain(): PostDomain =
+    PostDomain(
         userId = userId,
-        // on pourrait faire un transformation ici d'ailleurs
-        title = title, // title?.capitalize() ?: ""
+        id = id,
+        title = title,
         body = body
     )
-}
