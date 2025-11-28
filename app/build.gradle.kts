@@ -52,11 +52,13 @@ android {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
             buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3010/\"")
+            buildConfigField("boolean", "SHOW_DEBUG_MENU", "true")
         }
         // Flavor de développement (Vrai serveur)
         create("prod") {
             dimension = "environment"
             buildConfigField("String", "API_BASE_URL", "\"https://jsonplaceholder.typicode.com/\"")
+            buildConfigField("boolean", "SHOW_DEBUG_MENU", "false")
         }
     }
 }

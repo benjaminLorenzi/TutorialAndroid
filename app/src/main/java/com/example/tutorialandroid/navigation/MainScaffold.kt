@@ -59,12 +59,12 @@ fun MainScaffold(
 ) {
     // Création du contrôleur de navigation
     val navController = rememberNavController()
-    val isDev = BuildConfig.FLAVOR == "dev"
+    val settingsAvailable = BuildConfig.SHOW_DEBUG_MENU
 
     val items = buildList {
         add(BottomNavItem.Home)
         add(BottomNavItem.Posts)
-        if (isDev) {
+        if (settingsAvailable) {
             add(BottomNavItem.Settings)
         }
     }
@@ -148,7 +148,7 @@ fun MainScaffold(
             composable(BottomNavItem.Posts.route) {
                 PostListScreen(vm = vm)
             }
-            if (BuildConfig.FLAVOR == "dev") {
+            if (settingsAvailable) {
                 composable(BottomNavItem.Settings.route) {
                     SettingsScreen()
                 }
