@@ -22,6 +22,7 @@ import com.example.tutorialandroid.screen.PostListScreen
 import com.example.tutorialandroid.R
 import com.example.tutorialandroid.screen.SettingsScreen
 import com.example.tutorialandroid.viewModel.PostsViewModel
+import com.example.tutorialandroid.BuildConfig
 
 /**
  * MainScaffold est le composable racine de l’application.
@@ -58,13 +59,15 @@ fun MainScaffold(
 ) {
     // Création du contrôleur de navigation
     val navController = rememberNavController()
+    val isDev = BuildConfig.FLAVOR == "dev"
 
-    // Liste de tes onglets (tabs) présents dans la bottom bar.
-    val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Posts,
-        BottomNavItem.Settings
-    )
+    val items = buildList {
+        add(BottomNavItem.Home)
+        add(BottomNavItem.Posts)
+        if (isDev) {
+            add(BottomNavItem.Settings)
+        }
+    }
 
     val rootRoutes = items.map { it.route }
 
@@ -145,10 +148,12 @@ fun MainScaffold(
             composable(BottomNavItem.Posts.route) {
                 PostListScreen(vm = vm)
             }
-
-            composable(BottomNavItem.Settings.route) {
-                SettingsScreen()
+            if (BuildConfig.FLAVOR == "dev") {
+                composable(BottomNavItem.Settings.route) {
+                    SettingsScreen()
+                }
             }
+
         }
     }
 }
