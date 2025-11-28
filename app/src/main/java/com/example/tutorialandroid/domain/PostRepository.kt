@@ -31,6 +31,11 @@ interface PostRepository {
      * Si la base de données change (via refreshPosts), une nouvelle liste est émise ici automatiquement.
      */
     fun getStoredPosts(): Flow<List<PostDomain>>
+
+    /**
+     Clear le database
+     */
+    suspend fun clearData()
 }
 
 /**
@@ -53,6 +58,10 @@ class FakePostRepository : PostRepository {
         return flow {
             emit(posts)
         } */
+    }
+
+    override suspend fun clearData() {
+        print("")
     }
 }
 
@@ -94,5 +103,9 @@ class NetworkPostRepository(
                 // Ici, on transforme la List<Entity> en List<Domain>
                 entities.map { it.toDomain() }
             }
+    }
+
+    override suspend fun clearData() {
+        postDao.deleteAll()
     }
 }

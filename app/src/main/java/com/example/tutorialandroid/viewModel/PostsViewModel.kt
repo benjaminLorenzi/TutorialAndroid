@@ -6,6 +6,7 @@ import com.example.tutorialandroid.network.NetworkPost
 import com.example.tutorialandroid.domain.NetworkPostRepository
 import com.example.tutorialandroid.domain.PostDomain
 import com.example.tutorialandroid.domain.PostRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -102,6 +103,12 @@ class PostsViewModel(
                     e.message ?: "Erreur lors du rafraîchissement des posts"
                 )
             }
+        }
+    }
+
+    fun clearData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearData()
         }
     }
 
