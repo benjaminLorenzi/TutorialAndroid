@@ -26,6 +26,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -37,8 +38,29 @@ android {
     }
     buildFeatures {
         compose = true
+        // Active la creation d'un classe BuildConfig
+        buildConfig = true
+    }
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+        // Flavor de développement (Localhost)
+        create("dev") {
+            dimension = "environment"
+            // Le package de l'app devient com.example.app.dev
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3010/\"")
+        }
+        // Flavor de développement (Vrai serveur)
+        create("prod") {
+            dimension = "environment"
+            buildConfigField("String", "API_BASE_URL", "\"https://jsonplaceholder.typicode.com/\"")
+        }
     }
 }
+
 
 dependencies {
     implementation(libs.androidx.core.ktx)

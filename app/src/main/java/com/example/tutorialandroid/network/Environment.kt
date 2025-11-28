@@ -1,5 +1,6 @@
 package com.example.tutorialandroid.network
 import android.content.Context
+import com.example.tutorialandroid.BuildConfig
 
 /**
  * Constantes privées pour la gestion des préférences.
@@ -7,8 +8,8 @@ import android.content.Context
  */
 private object SettingsManager {
     const val PREFERENCE_KEY = "MesPreferences"
-    const val DEFAULT_BASE_URL = "https://jsonplaceholder.typicode.com/"
     const val KEY_BASE_URL = "base_url"
+    // La constante DEFAULT_BASE_URL a été supprimée car elle est remplacée par BuildConfig.API_BASE_URL
 }
 
 /**
@@ -23,23 +24,22 @@ class Environment(val context: Context) {
      * Récupère l'URL de base pour l'API.
      *
      * Logique :
-     * 1. Regarde si une URL personnalisée existe dans les préférences.
-     * 2. Si oui, la retourne.
-     * 3. Si non (ou vide), retourne l'URL par défaut définie dans SettingsManager.
+     * 1. En PROD : Force l'URL officielle (sécurité).
+     * 2. En DEV : Regarde si une URL perso existe dans les préférences, sinon utilise celle du build.gradle.
      *
      * @return L'URL valide à utiliser (String non-nulle).
      */
     fun getBaseUrl(): String {
+        // Si le flavor est "prod", on interdit la modification d'URL
+        if (BuildConfig.FLAVOR == "prod") {
+            return BuildConfig.API_BASE_URL
+        }
         val sharedPref = context.getSharedPreferences(SettingsManager.PREFERENCE_KEY, Context.MODE_PRIVATE)
 
         val savedUrl = sharedPref.getString(SettingsManager.KEY_BASE_URL, null)
 
         // Si savedUrl est null ou vide, on renvoie la valeur par défaut
-        return if (savedUrl.isNullOrEmpty()) {
-            SettingsManager.DEFAULT_BASE_URL
-        } else {
-            savedUrl
-        }
+        return savedUrl ?: BuildConfig.API_BASE_URL
     }
 
     /**
