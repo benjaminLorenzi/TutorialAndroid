@@ -61,6 +61,13 @@ fun MainScaffold(
     val navController = rememberNavController()
     val settingsAvailable = BuildConfig.SHOW_DEBUG_MENU
 
+    // Equivalent
+    /*
+    val items: MutableList<BottomNavItem> = mutableListOf(BottomNavItem.Home, BottomNavItem.Posts)
+
+    if (settingsAvailable) {
+        items.add(BottomNavItem.Settings)
+    } */
     val items = buildList {
         add(BottomNavItem.Home)
         add(BottomNavItem.Posts)
