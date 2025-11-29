@@ -27,7 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 
 @Composable
-fun SettingsScreen(onClickDb: () -> Unit) {
+fun SettingsScreen(onClearDb: () -> Unit) {
     // 1. On récupère le contexte actuel (nécessaire pour les SharedPreferences)
     val context = LocalContext.current
 
@@ -65,7 +65,7 @@ fun SettingsScreen(onClickDb: () -> Unit) {
 
         Button(
             onClick = {
-                onClickDb()
+                onClearDb()
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
         ) {

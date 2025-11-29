@@ -150,7 +150,7 @@ fun MainScaffold(
             }
             if (settingsAvailable) {
                 composable(BottomNavItem.Settings.route) {
-                    SettingsScreen(onClickDb = {
+                    SettingsScreen(onClearDb = {
                         vm.clearData()
                     })
                 }
