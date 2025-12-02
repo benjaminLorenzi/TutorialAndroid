@@ -2,6 +2,7 @@ package com.example.tutorialandroid.screen
 
 import android.content.Intent
 import android.net.Uri
+import android.provider.CalendarContract
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import com.example.tutorialandroid.R
 import com.example.tutorialandroid.SecondActivity
 import com.example.tutorialandroid.receiver.MyExplicitReceiver
 import com.example.tutorialandroid.service.MySimpleService
+import java.util.Calendar
 
 /**
  * DetailScreen affiche un écran contenant plusieurs actions utilisant
@@ -42,6 +44,7 @@ fun DetailScreen() {
         ExplicitIntentButton()
         ExplicitBroadcastButton()
         StartServiceButton()
+        CalendarButton()
     }
 }
 
@@ -282,5 +285,66 @@ fun StartServiceButton() {
 
     }) {
         Text(stringResource(id = R.string.detail_button_start_simple_service))
+    }
+}
+
+/**
+ * Affiche un bouton qui, au clic, ouvre l'application de calendrier de l'utilisateur
+ * pour lui proposer d'ajouter un nouvel événement pré-rempli.
+ *
+ * Ce composant est autonome et gère entièrement la création de l'intent et
+ * le lancement de l'activité du calendrier.
+ */
+@Composable
+fun CalendarButton() {
+    // Récupère le contexte local, nécessaire pour lancer une activité système (Intent).
+    val context = LocalContext.current
+
+    Button(onClick = {
+        // --- 1. Préparation des dates et heures de l'événement ---
+        // Exemple : évènement demain de 10h à 11h
+        // Calendar.getInstance() ⇒ prend la date/heure actuelle
+        /*
+        apply :
+            - exécute un bloc de code sur l’objet
+            - te donne accès à cet objet via this (implicite)
+            - retourne le même objet à la fin
+         */
+        // On utilise .apply pour configurer l'objet de manière concise.
+        val beginTime = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_MONTH, 1) // ⇒ ajoute 1 jour → donc demain
+            set(Calendar.HOUR_OF_DAY, 10) // ⇒ 10h du matin
+            set(Calendar.MINUTE, 0)  // Définit les minutes à 00
+        }
+
+        // Fait de même pour l'heure de fin.
+        val endTime = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_MONTH, 1) // Cible demain
+            set(Calendar.HOUR_OF_DAY, 11)  // Définit l'heure à 11h
+            set(Calendar.MINUTE, 0)   // Définit les minutes à 00
+        }
+
+        // --- 2. Création de l'intent pour l'ajout d'événement ---
+
+        // Un Intent est un message envoyé au système Android pour demander une action.
+        // ACTION_INSERT demande d'insérer une nouvelle donnée.
+        val intent = Intent(Intent.ACTION_INSERT).apply {
+            // Spécifie que la donnée à insérer est un événement de calendrier.
+            data = CalendarContract.Events.CONTENT_URI
+            // Ajoute les détails de l'événement en tant que "extras" dans l'intent.
+            // timeInMillis convertit la date en un timestamp compréhensible par le système.
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.timeInMillis)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.timeInMillis)
+            putExtra(CalendarContract.Events.TITLE, "Mon événement Compose")
+            putExtra(CalendarContract.Events.DESCRIPTION, "Créé depuis un composable")
+            putExtra(CalendarContract.Events.EVENT_LOCATION, "Paris")
+        }
+        // --- 3. Lancement de l'activité ---
+
+        // Demande au système de trouver une application capable de gérer cet intent
+        // (l'application calendrier) et de l'ouvrir.
+        context.startActivity(intent)
+    }) {
+        Text("Ajouter au calendrier")
     }
 }
